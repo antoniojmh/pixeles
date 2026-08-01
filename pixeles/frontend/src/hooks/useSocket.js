@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
-import { API_URL } from "./env";
+import { API_URL } from "../env.js";
 
 /**
  * Hook personalizado para conexión Socket.io
