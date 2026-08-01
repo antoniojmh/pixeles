@@ -1,3 +1,13 @@
+const { pool } = require("../config/database");
+const socketService = require("../services/socketService");
+const timerService = require("../services/timerService");
+
+function createError(status, message) {
+  const err = new Error(message);
+  err.status = status;
+  return err;
+}
+
 /**
  * POST /api/consoles/:id/pause  — Pausar sesión activa
  */
@@ -118,3 +128,5 @@ async function setStatus(req, res) {
   socketService.emitConsoleUpdated(result.rows[0]);
   res.json({ console: result.rows[0] });
 }
+
+module.exports = { pauseSession, resumeSession, addTime, setStatus };
