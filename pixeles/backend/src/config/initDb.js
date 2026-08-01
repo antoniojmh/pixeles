@@ -1,16 +1,19 @@
 const fs = require("fs");
 const path = require("path");
-const { query } = require("./database");
+const { pool } = require("./database");
 
 /**
  * Ejecuta el esquema + datos iniciales (init-db.sql).
- * Es idempotente: usa CREATE TABLE IF NOT EXISTS e INSERT ON CONFLICT.
- * Se llama al arrancar el servidor.
+ * Es idempotente: usa CREATE TABLE IF NOT EXISTS, ALTER ... IF NOT EXISTS
+ * e INSERT ... ON CONFLICT. Se ejecuta en un solo client.query en modo
+ * simple (sin parámetros), que admite múltiples statements.
+ *
+ * IMPORTANTE: no es letal. Si falla, se loguea el error pero NO se aborta
+ * el arranque, para no tumbar un servicio que ya funciona.
  */
 async function initDb() {
-  // Localizar el archivo SQL (robusto ante distintos root dirs en Render)
   const candidates = [
-    path.join(__dirname, "..", "..", "scripts", "init-db.sql"), // repo/scripts
+    path.join(__dirname, "..", "..", "scripts", "init-db.sql"),
     path.join(__dirname, "..", "..", "..", "scripts", "init-db.sql"),
     path.join(__dirname, "..", "init-db.sql"),
     path.join(process.cwd(), "init-db.sql"),
@@ -23,18 +26,15 @@ async function initDb() {
   }
 
   const sql = fs.readFileSync(sqlPath, "utf8");
-
-  // Dividir por statements (el cliente pg no acepta multi-statement en una query)
-  const statements = sql
-    .split(";")
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
-
-  for (const stmt of statements) {
-    await query(stmt);
+  const client = await pool.connect();
+  try {
+    await client.query(sql);
+    console.log("[DB] Esquema y datos iniciales aplicados ✅");
+  } catch (err) {
+    console.error("[DB] init-db: error NO letal aplicando esquema →", err.message);
+  } finally {
+    client.release();
   }
-
-  console.log("[DB] Esquema y datos iniciales aplicados ✅ (%d statements)", statements.length);
   return true;
 }
 
