@@ -31,9 +31,8 @@ export default function Header({ stats }) {
               <span className="header-stat-label">Libres</span>
             </div>
             <div className="header-stat">
-              <span className="header-stat-value header-stat-revenue">
-                Q{(stats.total_revenue ?? 0).toFixed(2)}
-              </span>
+                <span className="header-stat-value header-stat-revenue">
+                  Q{parseFloat(stats.total_revenue || 0).toFixed(2)}</span>
               <span className="header-stat-label">Total</span>
             </div>
           </div>

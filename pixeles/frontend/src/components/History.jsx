@@ -153,7 +153,7 @@ export default function History() {
                       </td>
                       <td>{formatDuration(s.duration_minutes)}</td>
                       <td>{s.client_name || "—"}</td>
-                      <td className="history-amount">Q{s.amount_paid?.toFixed(2)}</td>
+                      <td className="history-amount">Q{parseFloat(s.amount_paid || 0).toFixed(2)}</td>
                       <td>
                         <span className={`badge badge-${s.status === "completed" ? "free" : s.status === "active" ? "occupied" : "maintenance"}`}>
                           {s.status === "completed" ? "Completada" : s.status === "active" ? "Activa" : "Cancelada"}
