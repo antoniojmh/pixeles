@@ -32,8 +32,10 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 // ============================================
 // Rutas
 // ============================================
-app.use("/api/consoles", consoleRoutes);
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/consoles", consoleRoutes);
+app.use("/api/products", require("./routes/products"));
+app.use("/api/branches", require("./routes/branches"));
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/games", gameRoutes);
 app.use("/api/reports", reportRoutes);
