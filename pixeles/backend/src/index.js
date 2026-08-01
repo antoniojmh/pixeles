@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const { testConnection } = require("./config/database");
+const { initDb } = require("./config/initDb");
 const { createClient } = require("./config/redis");
 const { initSocket } = require("./services/socketService");
 const timerService = require("./services/timerService");
@@ -64,6 +65,9 @@ async function start() {
     console.error("[Server] No se pudo conectar a PostgreSQL. Abortando.");
     process.exit(1);
   }
+
+  // Aplicar esquema + datos iniciales (crea tablas si no existen)
+  await initDb();
 
   // Conectar Redis (no crítico)
   try {
