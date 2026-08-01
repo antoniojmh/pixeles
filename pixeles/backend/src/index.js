@@ -2,6 +2,8 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const morgan = require("morgan");
+const path = require("path");
+const fs = require("fs");
 
 const { testConnection } = require("./config/database");
 const { initDb } = require("./config/initDb");
@@ -44,6 +46,20 @@ app.get("/api/health", (_req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// ============================================
+// Frontend estático (un solo servicio en Render)
+// Busca el build del frontend y lo sirve si existe
+// ============================================
+const frontendDist = path.join(__dirname, "..", "..", "frontend", "dist");
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  // SPA fallback: rutas internas -> index.html
+  app.get(/^(?!\/api|\/socket\.io).*/, (_req, res) => {
+    res.sendFile(path.join(frontendDist, "index.html"));
+  });
+  console.log("[Frontend] Sirviendo build estático desde", frontendDist);
+}
 
 // 404
 app.use((_req, res) => {
