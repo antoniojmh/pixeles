@@ -1,0 +1,68 @@
+services:
+  # Base de datos PostgreSQL
+  - type: pserv
+    name: pixeles-db
+    runtime: postgresql
+    plan: free
+    ipAllowList: []
+    databaseName: pixeles
+    user: pixeles
+
+  # Backend Node.js
+  - type: web
+    name: pixeles-api
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install && npm run build 2>/dev/null || true
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_HOST
+        fromDatabase:
+          name: pixeles-db
+          property: host
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        value: pixeles
+      - key: DB_USER
+        value: pixeles
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: pixeles-db
+          property: password
+      - key: REDIS_URL
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://pixeles-web.onrender.com
+      - key: TZ
+        value: America/Guatemala
+    headers:
+      - http:
+          path: /health
+          methods:
+            - GET
+          cacheBypassCookie: ""
+
+  # Frontend (Vite build + nginx)
+  - type: web
+    name: pixeles-web
+    runtime: node
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: npm install -g serve && serve -s dist -l 3000
+    envVars:
+      - key: VITE_API_URL
+        value: https://pixeles-api.onrender.com
+    routes:
+      - type: redirect
+        source: /
+        destination: /
+        permanent: false
+
+envVars:
+  - key: TZ
+    value: America/Guatemala

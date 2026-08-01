@@ -1,0 +1,29 @@
+/* App layout styles are in index.css */
+/* This file is kept for any App-specific overrides */
+
+.notification-permission {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .notification-permission {
+    left: 12px;
+    right: 12px;
+    transform: none;
+    flex-direction: column;
+    text-align: center;
+  }
+}

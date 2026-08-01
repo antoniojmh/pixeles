@@ -1,0 +1,182 @@
+.console-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--status-color, var(--border));
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.console-card:hover {
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.console-card-free {
+  border-left-color: var(--status-free);
+}
+
+.console-card-occupied {
+  border-left-color: var(--status-occupied);
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(6, 182, 212, 0.05) 100%);
+}
+
+.console-card-reserved {
+  border-left-color: var(--status-reserved);
+}
+
+.console-card-maintenance {
+  border-left-color: var(--status-maintenance);
+  opacity: 0.7;
+}
+
+/* Header */
+.console-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.console-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.console-card-number {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.console-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* Body */
+.console-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.console-card-game {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.console-card-game-icon {
+  font-size: 1rem;
+}
+
+.console-card-game-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Timer */
+.console-card-timer {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.console-card-time {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.timer-warning .console-card-time {
+  color: var(--warning);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.timer-timeup .console-card-time {
+  color: var(--danger);
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+.console-card-duration {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Progress bar */
+.console-card-progress {
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.console-card-progress-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1s linear;
+}
+
+/* Client */
+.console-card-client {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Actions */
+.console-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.console-card-btn {
+  flex: 1;
+  justify-content: center;
+}
+
+.console-card-waiting {
+  flex: 1;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--status-reserved);
+  font-weight: 600;
+  padding: 8px;
+}
+
+/* Empty card for free consoles */
+.console-card-free .console-card-body {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animación de entrada */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.console-card {
+  animation: cardFadeIn 0.3s ease-out;
+}

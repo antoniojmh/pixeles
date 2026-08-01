@@ -1,0 +1,138 @@
+/* ============================================
+   Toast Alert (5 min warning)
+   ============================================ */
+.alert-toast {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  max-width: 380px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.alert-toast-warning {
+  background: linear-gradient(135deg, #1a1500, #2a2000);
+  border: 1px solid var(--warning);
+}
+
+.alert-toast-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-toast-icon {
+  font-size: 1.3rem;
+}
+
+.alert-toast-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--warning);
+}
+
+.alert-toast-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 2px;
+  line-height: 1;
+}
+
+.alert-toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--warning);
+  animation: alertProgress 8s linear forwards;
+}
+
+@keyframes alertProgress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* ============================================
+   Time Up Overlay (fullscreen red)
+   ============================================ */
+.timeup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(200, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.timeup-content {
+  text-align: center;
+  animation: timeupPulse 1s ease-in-out infinite;
+}
+
+.timeup-icon {
+  font-size: 6rem;
+  margin-bottom: 16px;
+}
+
+.timeup-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(255, 0, 0, 0.6);
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.timeup-console {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 32px;
+  font-weight: 600;
+}
+
+.timeup-dismiss {
+  font-size: 1.2rem !important;
+  padding: 14px 48px !important;
+  background: #fff !important;
+  color: #000 !important;
+  border: none !important;
+}
+
+.timeup-dismiss:hover {
+  background: #eee !important;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3) !important;
+}
+
+@keyframes timeupPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@media (max-width: 600px) {
+  .timeup-title {
+    font-size: 2rem;
+  }
+  .timeup-icon {
+    font-size: 4rem;
+  }
+  .alert-toast {
+    top: 70px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+  }
+}

@@ -1,0 +1,99 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: 0 24px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-logo {
+  font-size: 1.1rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.header-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.header-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.header-stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.header-stat-revenue {
+  color: var(--success) !important;
+}
+
+.header-stat-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-clock {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 12px;
+  }
+  .header-stats {
+    gap: 12px;
+  }
+  .header-date {
+    display: none;
+  }
+  .header-stat-value {
+    font-size: 0.85rem;
+  }
+  .header-clock {
+    font-size: 0.8rem;
+  }
+}
