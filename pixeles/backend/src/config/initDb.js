@@ -1,15 +1,11 @@
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcryptjs");
 const { pool } = require("./database");
 
 /**
  * Ejecuta el esquema + datos iniciales (init-db.sql).
- * Es idempotente: usa CREATE TABLE IF NOT EXISTS, ALTER ... IF NOT EXISTS
- * e INSERT ... ON CONFLICT. Se ejecuta en un solo client.query en modo
- * simple (sin parámetros), que admite múltiples statements.
- *
- * IMPORTANTE: no es letal. Si falla, se loguea el error pero NO se aborta
- * el arranque, para no tumbar un servicio que ya funciona.
+ * Es idempotente. No letal: si falla, loguea pero no aborta el arranque.
  */
 async function initDb() {
   const candidates = [
@@ -38,4 +34,24 @@ async function initDb() {
   return true;
 }
 
-module.exports = { initDb };
+/**
+ * Crea el usuario admin por defecto (admin / admin123) si no existe.
+ */
+async function seedAdmin() {
+  try {
+    const existing = await pool.query("SELECT id FROM users WHERE username = 'admin'");
+    if (existing.rows.length > 0) return;
+
+    const hash = await bcrypt.hash("admin123", 10);
+    await pool.query(
+      `INSERT INTO users (username, password_hash, full_name, role)
+       VALUES ('admin', $1, 'Administrador', 'superadmin')`,
+      [hash]
+    );
+    console.log("[DB] Admin inicial creado ✅ (admin / admin123)");
+  } catch (err) {
+    console.error("[DB] Error creando admin →", err.message);
+  }
+}
+
+module.exports = { initDb, seedAdmin };

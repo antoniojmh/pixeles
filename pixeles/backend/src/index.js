@@ -6,7 +6,7 @@ const path = require("path");
 const fs = require("fs");
 
 const { testConnection } = require("./config/database");
-const { initDb } = require("./config/initDb");
+const { initDb, seedAdmin } = require("./config/initDb");
 const { createClient } = require("./config/redis");
 const { initSocket } = require("./services/socketService");
 const timerService = require("./services/timerService");
@@ -33,6 +33,7 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 // Rutas
 // ============================================
 app.use("/api/consoles", consoleRoutes);
+app.use("/api/auth", require("./routes/auth"));
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/games", gameRoutes);
 app.use("/api/reports", reportRoutes);
@@ -82,8 +83,8 @@ async function start() {
     process.exit(1);
   }
 
-  // Aplicar esquema + datos iniciales (crea tablas si no existen)
   await initDb();
+  await seedAdmin();
 
   // Conectar Redis (no crítico)
   try {
