@@ -14,6 +14,18 @@ function createClient() {
         port: parseInt(process.env.REDIS_PORT || "6379"),
       };
 
+  // Detección de TLS:
+  // - "rediss://" o puerto 6380 => TLS
+  // - "redis://" puerto 6379 => SIN TLS (Upstash default)
+  // Forzar TLS a ciegas rompe la conexión en puerto 6379.
+  let tls = undefined;
+  if (redisUrl) {
+    const needsTls =
+      redisUrl.startsWith("rediss://") ||
+      redisUrl.includes(":6380");
+    tls = needsTls ? {} : undefined;
+  }
+
   redis = new Redis({
     ...redisConfig,
     retryStrategy(times) {
@@ -22,10 +34,7 @@ function createClient() {
     },
     maxRetriesPerRequest: 3,
     enableOfflineQueue: false,
-    // Upstash usa TLS siempre (puerto 6379/6380 con certificado).
-    // ioredis con URL y ciertos hosts no activa TLS solo; forzamos tls vacío
-    // que significa "usar TLS sin verificación de CA personalizada".
-    tls: redisUrl ? {} : undefined,
+    tls,
   });
 
   redis.on("connect", () => console.log("[Redis] Conectado ✅"));
