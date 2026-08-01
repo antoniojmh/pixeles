@@ -1,4 +1,6 @@
-const BASE = "";
+import { API_URL } from "./env";
+
+const BASE = API_URL;
 
 /**
  * Petición base a la API

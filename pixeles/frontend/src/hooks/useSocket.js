@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
+import { API_URL } from "./env";
 
 /**
  * Hook personalizado para conexión Socket.io
@@ -16,7 +17,7 @@ export function useSocket() {
   const listenersRef = useRef(new Map());
 
   useEffect(() => {
-    const socket = io({
+    const socket = io(API_URL || undefined, {
       transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionAttempts: Infinity,
