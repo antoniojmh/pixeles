@@ -1,12 +1,17 @@
-.games {
+/* ============================================
+   PIXELES - Games Catalog
+   Dark gaming cards
+   ============================================ */
+
+.gm {
   animation: fadeIn 0.3s ease-out;
 }
 
-.games-error {
-  background: var(--status-maintenance-bg);
-  border: 1px solid var(--danger);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
+.gm-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 14px 18px;
   margin-bottom: 20px;
   color: var(--danger);
   font-size: 0.9rem;
@@ -15,54 +20,112 @@
   gap: 12px;
 }
 
-.games-list {
-  display: grid;
-  gap: 2px;
-}
-
-.game-item {
+/* Empty state */
+.gm-empty {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--bg-elevated);
-  border-radius: var(--radius-sm);
-  transition: background 0.2s;
+  justify-content: center;
+  gap: 14px;
+  padding: 60px 20px;
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  text-align: center;
 }
 
-.game-item:hover {
-  background: var(--bg-card-hover);
+.gm-empty-icon {
+  font-size: 3rem;
+  opacity: 0.4;
 }
 
-.game-name {
+.gm-empty-text {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* Grid */
+.gm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+/* Card */
+.gm-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 16px;
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  transition: all 0.25s;
+  position: relative;
+  animation: cardSlideUp 0.35s ease-out;
+}
+
+.gm-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  border-color: rgba(6, 182, 212, 0.2);
+}
+
+.gm-card-icon {
+  font-size: 2rem;
+  opacity: 0.6;
+}
+
+.gm-card-name {
   font-size: 0.95rem;
   font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
 }
 
-.game-actions {
+.gm-card-actions {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-.game-item:hover .game-actions {
+.gm-card:hover .gm-card-actions {
   opacity: 1;
 }
 
-.game-edit-form {
+.gm-btn-del:hover {
+  color: var(--danger) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Edit row */
+.gm-edit-row {
   display: flex;
-  gap: 8px;
-  flex: 1;
+  gap: 6px;
+  width: 100%;
   align-items: center;
 }
 
-.game-edit-form .form-input {
+.gm-edit-row .form-input {
   flex: 1;
+  font-size: 0.85rem;
+}
+
+@keyframes cardSlideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 600px) {
-  .game-actions {
+  .gm-card-actions {
     opacity: 1;
+  }
+  .gm-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }

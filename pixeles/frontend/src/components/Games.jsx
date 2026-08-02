@@ -15,7 +15,7 @@ export default function Games() {
   const loadGames = useCallback(async () => {
     try {
       const data = await api.getGames();
-      setGames(data.games);
+      setGames(data.games || []);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -24,14 +24,11 @@ export default function Games() {
     }
   }, []);
 
-  useEffect(() => {
-    loadGames();
-  }, [loadGames]);
+  useEffect(() => { loadGames(); }, [loadGames]);
 
   const handleAdd = async (e) => {
     e.preventDefault();
     if (!newGameName.trim()) return;
-
     setSaving(true);
     try {
       await api.createGame({ name: newGameName.trim() });
@@ -47,7 +44,6 @@ export default function Games() {
 
   const handleEdit = async (id) => {
     if (!editName.trim()) return;
-
     setSaving(true);
     try {
       await api.updateGame(id, { name: editName.trim() });
@@ -62,10 +58,7 @@ export default function Games() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("¿Eliminar este juego? Las sesiones existentes no se verán afectadas.")) {
-      return;
-    }
-
+    if (!confirm("¿Eliminar este juego? Las sesiones existentes no se verán afectadas.")) return;
     try {
       await api.deleteGame(id);
       await loadGames();
@@ -74,88 +67,67 @@ export default function Games() {
     }
   };
 
-  const startEdit = (game) => {
-    setEditingId(game.id);
-    setEditName(game.name);
-  };
-
   return (
-    <div className="games animate-fade-in">
+    <div className="gm animate-fade-in">
       <div className="page-title">
         🎮 Catálogo de Juegos
-        <button className="btn btn-primary btn-sm" onClick={() => setAdding(true)}>
+        <button className="btn btn-primary" onClick={() => setAdding(true)}>
           + Agregar Juego
         </button>
       </div>
 
       {error && (
-        <div className="games-error">
-          ⚠️ {error}
-          <button className="btn btn-sm btn-primary" onClick={loadGames}>
-            Reintentar
-          </button>
-        </div>
+        <div className="gm-error">⚠️ {error} <button className="btn btn-sm btn-primary" onClick={loadGames}>Reintentar</button></div>
       )}
 
       {loading ? (
-        <div className="loading-spinner">
-          <div className="spinner" />
+        <div className="loading-spinner"><div className="spinner" /></div>
+      ) : games.length === 0 ? (
+        <div className="gm-empty">
+          <div className="gm-empty-icon">🕹️</div>
+          <div className="gm-empty-text">No hay juegos en el catálogo</div>
+          <button className="btn btn-primary" onClick={() => setAdding(true)}>+ Agregar el primero</button>
         </div>
       ) : (
-        <div className="section">
-          {games.length === 0 ? (
-            <div className="empty-state">
-              <div className="empty-state-icon">🎮</div>
-              <div className="empty-state-text">
-                No hay juegos en el catálogo. Agrega el primero.
-              </div>
-            </div>
-          ) : (
-            <div className="games-list">
-              {games.map((game) => (
-                <div key={game.id} className="game-item">
-                  {editingId === game.id ? (
-                    <div className="game-edit-form">
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") handleEdit(game.id);
-                          if (e.key === "Escape") setEditingId(null);
-                        }}
-                        autoFocus
-                        disabled={saving}
-                      />
-                      <button className="btn btn-success btn-sm" onClick={() => handleEdit(game.id)} disabled={saving}>
-                        💾 Guardar
-                      </button>
-                      <button className="btn btn-ghost btn-sm" onClick={() => setEditingId(null)} disabled={saving}>
-                        Cancelar
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <span className="game-name">{game.name}</span>
-                      <div className="game-actions">
-                        <button className="btn btn-ghost btn-sm" onClick={() => startEdit(game)}>
-                          ✏️
-                        </button>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(game.id)}>
-                          🗑️
-                        </button>
-                      </div>
-                    </>
-                  )}
+        <div className="gm-grid">
+          {games.map((game) => (
+            <div key={game.id} className="gm-card">
+              {editingId === game.id ? (
+                <div className="gm-edit-row">
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleEdit(game.id);
+                      if (e.key === "Escape") setEditingId(null);
+                    }}
+                    autoFocus
+                    disabled={saving}
+                  />
+                  <button className="btn btn-success btn-sm" onClick={() => handleEdit(game.id)} disabled={saving}>💾</button>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setEditingId(null)} disabled={saving}>✕</button>
                 </div>
-              ))}
+              ) : (
+                <>
+                  <div className="gm-card-icon">🎮</div>
+                  <div className="gm-card-name">{game.name}</div>
+                  <div className="gm-card-actions">
+                    <button className="btn btn-ghost btn-sm" onClick={() => { setEditingId(game.id); setEditName(game.name); }} title="Editar">
+                      ✏️
+                    </button>
+                    <button className="btn btn-ghost btn-sm gm-btn-del" onClick={() => handleDelete(game.id)} title="Eliminar">
+                      🗑️
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
-          )}
+          ))}
         </div>
       )}
 
-      {/* Modal de agregar juego */}
       {adding && (
         <div className="modal-overlay" onClick={() => setAdding(false)}>
           <div className="modal-content animate-slide-up" onClick={(e) => e.stopPropagation()}>
@@ -175,9 +147,7 @@ export default function Games() {
                 />
               </div>
               <div className="modal-actions">
-                <button type="button" className="btn btn-ghost" onClick={() => setAdding(false)} disabled={saving}>
-                  Cancelar
-                </button>
+                <button type="button" className="btn btn-ghost" onClick={() => setAdding(false)} disabled={saving}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={saving || !newGameName.trim()}>
                   {saving ? "Guardando..." : "✅ Agregar"}
                 </button>

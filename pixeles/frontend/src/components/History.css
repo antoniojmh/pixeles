@@ -1,92 +1,139 @@
-.history {
+/* ============================================
+   PIXELES - History
+   Dark gaming table
+   ============================================ */
+
+.hist {
   animation: fadeIn 0.3s ease-out;
 }
 
-.history-filters-grid {
+/* Filtros */
+.hist-filters {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   align-items: end;
+  padding: 18px 20px;
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  margin-bottom: 20px;
 }
 
-.history-filter-actions {
+.hist-filter-btns {
   display: flex;
   gap: 8px;
   align-items: flex-end;
 }
 
-.history-error {
-  background: var(--status-maintenance-bg);
-  border: 1px solid var(--danger);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
+.hist-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
   color: var(--danger);
   margin-bottom: 16px;
   font-size: 0.85rem;
 }
 
-/* Tabla */
-.history-table-wrapper {
-  overflow-x: auto;
+/* Tabla wrapper */
+.hist-table-wrap {
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 20px;
+  overflow: hidden;
 }
 
-.history-table {
+/* Tabla */
+.hist-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
 }
 
-.history-table th {
+.hist-table th {
   text-align: left;
-  padding: 10px 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  padding: 12px 14px;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   white-space: nowrap;
 }
 
-.history-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
+.hist-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   vertical-align: middle;
+  color: var(--text-secondary);
 }
 
-.history-table tbody tr:hover {
-  background: var(--bg-card-hover);
+.hist-table tbody tr {
+  transition: background 0.15s;
 }
 
-.history-amount {
+.hist-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.hist-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.hist-console {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.hist-time {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.hist-duration {
   font-family: var(--font-mono);
   font-weight: 600;
+  color: var(--accent-light);
+}
+
+.hist-amount {
+  font-family: var(--font-mono);
+  font-weight: 700;
   color: var(--success);
 }
 
 /* Paginación */
-.history-pagination {
+.hist-pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 18px;
   margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.history-page-info {
-  font-size: 0.85rem;
+.hist-page {
+  font-size: 0.82rem;
   color: var(--text-muted);
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
-  .history-filters-grid {
-    grid-template-columns: 1fr;
+  .hist-filters {
+    grid-template-columns: 1fr 1fr;
   }
-  .history-table th,
-  .history-table td {
-    padding: 8px;
-    font-size: 0.8rem;
+  .hist-table th,
+  .hist-table td {
+    padding: 8px 10px;
+    font-size: 0.78rem;
   }
 }

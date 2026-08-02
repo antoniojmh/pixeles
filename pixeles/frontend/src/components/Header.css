@@ -1,99 +1,168 @@
-.header {
+/* ============================================
+   PIXELES - Header
+   Gaming glassmorphism
+   ============================================ */
+
+.hd {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
   padding: 0 24px;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border);
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-.header-left {
+.hd-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
-.header-logo {
+.hd-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hd-logo {
+  font-size: 1.3rem;
+}
+
+.hd-name {
   font-size: 1.1rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.header-date {
-  font-size: 0.8rem;
+.hd-subsystem {
+  font-size: 0.7rem;
   color: var(--text-muted);
-  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  padding: 3px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.header-center {
+.hd-center {
   flex: 1;
   display: flex;
   justify-content: center;
 }
 
-.header-stats {
+.hd-stats {
   display: flex;
-  gap: 24px;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.header-stat {
+.hd-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: 2px;
+  padding: 8px 18px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.header-stat-value {
+.hd-stat:last-child {
+  border-right: none;
+}
+
+.hd-stat-v {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--accent);
+  font-family: var(--font-mono);
+  color: var(--accent-light);
 }
 
-.header-stat-revenue {
+.hd-stat-free {
+  color: var(--status-free) !important;
+}
+
+.hd-stat-money {
   color: var(--success) !important;
 }
 
-.header-stat-label {
-  font-size: 0.65rem;
+.hd-stat-l {
+  font-size: 0.6rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 500;
+  letter-spacing: 0.06em;
+  font-weight: 600;
 }
 
-.header-right {
+.hd-right {
   display: flex;
   align-items: center;
+  gap: 14px;
 }
 
-.header-clock {
+.hd-clock {
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hd-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hd-user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), #0891b2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.hd-user-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {
-  .header {
+  .hd {
     padding: 0 12px;
   }
-  .header-stats {
-    gap: 12px;
-  }
-  .header-date {
+  .hd-subsystem {
     display: none;
   }
-  .header-stat-value {
+  .hd-stat {
+    padding: 6px 10px;
+  }
+  .hd-stat-v {
     font-size: 0.85rem;
   }
-  .header-clock {
+  .hd-clock {
     font-size: 0.8rem;
+    padding: 5px 8px;
   }
 }
