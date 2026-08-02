@@ -1,182 +1,311 @@
-.console-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--status-color, var(--border));
-  border-radius: var(--radius-md);
-  padding: 16px;
+/* ============================================
+   PIXELES - Console Card
+   Gaming glassmorphism card
+   ============================================ */
+
+.cs-card {
+  position: relative;
+  background: rgba(17, 24, 39, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  transition: all 0.3s ease;
-  position: relative;
+  gap: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  animation: cardSlideUp 0.4s ease-out;
 }
 
-.console-card:hover {
-  background: var(--bg-card-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.cs-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
-.console-card-free {
-  border-left-color: var(--status-free);
+/* Glow decorativo */
+.cs-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(6, 182, 212, 0.06) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  transition: opacity 0.3s;
+  opacity: 0.5;
 }
 
-.console-card-occupied {
-  border-left-color: var(--status-occupied);
-  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(6, 182, 212, 0.05) 100%);
+.cs-card:hover .cs-glow {
+  opacity: 1;
 }
 
-.console-card-reserved {
-  border-left-color: var(--status-reserved);
+.cs-occupied {
+  border-left: 3px solid var(--status-occupied);
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.8) 0%, rgba(6, 182, 212, 0.06) 100%);
 }
 
-.console-card-maintenance {
-  border-left-color: var(--status-maintenance);
-  opacity: 0.7;
+.cs-free {
+  border-left: 3px solid var(--status-free);
+}
+
+.cs-reserved {
+  border-left: 3px solid var(--status-reserved);
+}
+
+.cs-maintenance {
+  border-left: 3px solid var(--status-maintenance);
+  opacity: 0.65;
+}
+
+.cs-maintenance:hover {
+  opacity: 0.85;
+}
+
+/* Time-up flash */
+.cs-timeup {
+  animation: timeUpPulse 1.5s ease-in-out infinite;
+}
+
+.cs-near-end .cs-glow {
+  background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.1) 0%, transparent 60%);
+}
+
+@keyframes timeUpPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
+  50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.2); }
 }
 
 /* Header */
-.console-card-header {
+.cs-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.console-card-title {
+.cs-title {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.console-card-number {
+.cs-number {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 3px 8px;
+  border-radius: 6px;
 }
 
-.console-card-name {
-  font-size: 1rem;
+.cs-name {
+  font-size: 1.05rem;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Body */
-.console-card-body {
-  flex: 1;
+/* Timer Section */
+.cs-timer-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-.console-card-game {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.console-card-game-icon {
-  font-size: 1rem;
-}
-
-.console-card-game-name {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-/* Timer */
-.console-card-timer {
+.cs-timer {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 10px;
 }
 
-.console-card-time {
+.cs-time {
   font-family: var(--font-mono);
-  font-size: 2rem;
+  font-size: 2.4rem;
   font-weight: 800;
-  color: var(--accent);
-  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   line-height: 1;
+  letter-spacing: 0.02em;
 }
 
-.timer-warning .console-card-time {
-  color: var(--warning);
+.t-warn .cs-time {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
   animation: pulse 1s ease-in-out infinite;
 }
 
-.timer-timeup .console-card-time {
-  color: var(--danger);
+.t-up .cs-time {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  -webkit-background-clip: text;
+  background-clip: text;
   animation: shake 0.5s ease-in-out infinite;
 }
 
-.console-card-duration {
-  font-size: 0.75rem;
+.t-paused .cs-time {
+  opacity: 0.5;
+  animation: none;
+}
+
+.cs-duration {
+  font-size: 0.8rem;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* Progress bar */
-.console-card-progress {
-  height: 4px;
-  background: var(--bg-elevated);
-  border-radius: 2px;
+.cs-progress-wrap {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
   overflow: hidden;
 }
 
-.console-card-progress-bar {
+.cs-progress {
   height: 100%;
-  border-radius: 2px;
+  border-radius: 3px;
   transition: width 1s linear;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
 }
 
-/* Client */
-.console-card-client {
-  font-size: 0.8rem;
+/* Session info */
+.cs-session-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+
+.cs-game {
+  color: var(--accent-light);
+  font-weight: 600;
+}
+
+.cs-client {
   color: var(--text-muted);
 }
 
-/* Actions */
-.console-card-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.console-card-btn {
+/* Free body */
+.cs-free-body,
+.cs-reserved-body,
+.cs-maint-body {
   flex: 1;
-  justify-content: center;
-}
-
-.console-card-waiting {
-  flex: 1;
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--status-reserved);
-  font-weight: 600;
-  padding: 8px;
-}
-
-/* Empty card for free consoles */
-.console-card-free .console-card-body {
-  min-height: 80px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  padding: 12px 0;
+  min-height: 80px;
 }
 
-/* Animación de entrada */
-@keyframes cardFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.cs-free-icon {
+  font-size: 2rem;
+  opacity: 0.5;
 }
 
-.console-card {
-  animation: cardFadeIn 0.3s ease-out;
+.cs-free-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Actions */
+.cs-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cs-btn-main {
+  flex: 1;
+  min-width: 100%;
+  padding: 10px;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.cs-btn-pause {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  flex: 1;
+  justify-content: center;
+}
+.cs-btn-pause:hover {
+  background: rgba(245, 158, 11, 0.25);
+}
+
+.cs-btn-resume {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--success);
+  flex: 1;
+  justify-content: center;
+}
+.cs-btn-resume:hover {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+.cs-btn-time {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+  padding: 8px 12px;
+  justify-content: center;
+}
+.cs-btn-time:hover {
+  background: rgba(59, 130, 246, 0.22);
+}
+
+.cs-btn-end {
+  padding: 8px 12px;
+  justify-content: center;
+}
+
+.cs-btn-maint {
+  font-size: 0.8rem;
+  padding: 7px 12px;
+}
+
+/* Add time popup */
+.cs-addtime {
+  width: 100%;
+  display: flex;
+  gap: 6px;
+  animation: slideUp 0.2s ease-out;
+}
+
+.cs-addtime-btn {
+  flex: 1;
+  padding: 7px 10px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  color: #60a5fa;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cs-addtime-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+@keyframes cardSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }

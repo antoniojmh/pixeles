@@ -7,16 +7,16 @@ import "./Dashboard.css";
 
 export default function Dashboard({ onStatsUpdate }) {
   const [consoles, setConsoles] = useState([]);
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sessionForm, setSessionForm] = useState(null); // console object or null
+  const [sessionForm, setSessionForm] = useState(null);
   const { on } = useSocket();
 
-  // Cargar consolas
   const loadConsoles = useCallback(async () => {
     try {
       const data = await api.getConsoles();
-      setConsoles(data.consoles);
+      setConsoles(data.consoles || data || []);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -25,11 +25,12 @@ export default function Dashboard({ onStatsUpdate }) {
     }
   }, []);
 
-  // Cargar stats para el header
   const loadStats = useCallback(async () => {
     try {
       const data = await api.getStats();
-      if (onStatsUpdate) onStatsUpdate(data.stats);
+      const s = data.stats || data;
+      setStats(s);
+      if (onStatsUpdate) onStatsUpdate(s);
     } catch {}
   }, [onStatsUpdate]);
 
@@ -38,7 +39,6 @@ export default function Dashboard({ onStatsUpdate }) {
     loadStats();
   }, [loadConsoles, loadStats]);
 
-  // Socket events
   useEffect(() => {
     const unsub1 = on("console:updated", (data) => {
       setConsoles((prev) =>
@@ -46,31 +46,20 @@ export default function Dashboard({ onStatsUpdate }) {
       );
       loadStats();
     });
-
-    const unsub2 = on("session:started", (data) => {
-      loadConsoles();
-      loadStats();
-    });
-
+    const unsub2 = on("session:started", () => { loadConsoles(); loadStats(); });
     const unsub3 = on("session:ended", (data) => {
       setConsoles((prev) =>
         prev.map((c) =>
           c.id === data.consoleId
-            ? { ...c, ...data.console, remaining_ms: null }
+            ? { ...c, ...data.console, remaining_ms: null, session_end: null, session_start: null }
             : c
         )
       );
       loadStats();
     });
-
-    return () => {
-      unsub1?.();
-      unsub2?.();
-      unsub3?.();
-    };
+    return () => { unsub1?.(); unsub2?.(); unsub3?.(); };
   }, [on, loadConsoles, loadStats]);
 
-  // Refrescar consolas cada 30s como fallback
   useEffect(() => {
     const interval = setInterval(loadConsoles, 30000);
     return () => clearInterval(interval);
@@ -93,6 +82,30 @@ export default function Dashboard({ onStatsUpdate }) {
     }
   };
 
+  const handlePauseSession = async (consoleId) => {
+    try {
+      await api.pauseSession(consoleId);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleResumeSession = async (consoleId) => {
+    try {
+      await api.resumeSession(consoleId);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleAddTime = async (consoleId, minutes) => {
+    try {
+      await api.addTime(consoleId, minutes);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   const handleToggleMaintenance = async (consoleId) => {
     try {
       await api.toggleMaintenance(consoleId);
@@ -109,13 +122,64 @@ export default function Dashboard({ onStatsUpdate }) {
     );
   }
 
+  // Computar stats
+  const total = consoles.length;
+  const active = consoles.filter((c) => c.status === "occupied").length;
+  const free = consoles.filter((c) => c.status === "free").length;
+  const maint = consoles.filter((c) => c.status === "maintenance").length;
+
   return (
     <div className="dashboard animate-fade-in">
-      <div className="page-title">
-        📊 Dashboard
-        <button className="btn btn-ghost btn-sm" onClick={loadConsoles}>
-          🔄 Refrescar
-        </button>
+      {/* Stats row */}
+      <div className="dash-stats-row">
+        <div className="dash-stat">
+          <div className="dash-stat-icon">🕹️</div>
+          <div className="dash-stat-info">
+            <div className="dash-stat-value">{total}</div>
+            <div className="dash-stat-label">Total</div>
+          </div>
+        </div>
+        <div className="dash-stat dash-stat-active">
+          <div className="dash-stat-icon">🟢</div>
+          <div className="dash-stat-info">
+            <div className="dash-stat-value">{active}</div>
+            <div className="dash-stat-label">En juego</div>
+          </div>
+        </div>
+        <div className="dash-stat dash-stat-free">
+          <div className="dash-stat-icon">⚪</div>
+          <div className="dash-stat-info">
+            <div className="dash-stat-value">{free}</div>
+            <div className="dash-stat-label">Libres</div>
+          </div>
+        </div>
+        <div className="dash-stat dash-stat-maint">
+          <div className="dash-stat-icon">🔧</div>
+          <div className="dash-stat-info">
+            <div className="dash-stat-value">{maint}</div>
+            <div className="dash-stat-label">Mantenimiento</div>
+          </div>
+        </div>
+        {stats?.todayRevenue !== undefined && (
+          <div className="dash-stat dash-stat-money">
+            <div className="dash-stat-icon">💰</div>
+            <div className="dash-stat-info">
+              <div className="dash-stat-value">
+                Q{parseFloat(stats.todayRevenue || 0).toFixed(2)}
+              </div>
+              <div className="dash-stat-label">Hoy</div>
+            </div>
+          </div>
+        )}
+        {stats?.todaySessions !== undefined && (
+          <div className="dash-stat dash-stat-sessions">
+            <div className="dash-stat-icon">🎮</div>
+            <div className="dash-stat-info">
+              <div className="dash-stat-value">{stats.todaySessions || 0}</div>
+              <div className="dash-stat-label">Sesiones hoy</div>
+            </div>
+          </div>
+        )}
       </div>
 
       {error && (
@@ -127,14 +191,18 @@ export default function Dashboard({ onStatsUpdate }) {
         </div>
       )}
 
+      {/* Grid de consolas */}
       <div className="dashboard-grid">
-        {consoles.map((console) => (
+        {consoles.map((c) => (
           <ConsoleCard
-            key={console.id}
-            console={console}
-            onStart={() => setSessionForm(console)}
-            onEnd={() => handleEndSession(console.id)}
-            onMaintenance={() => handleToggleMaintenance(console.id)}
+            key={c.id}
+            console={c}
+            onStart={() => setSessionForm(c)}
+            onEnd={() => handleEndSession(c.id)}
+            onPause={() => handlePauseSession(c.id)}
+            onResume={() => handleResumeSession(c.id)}
+            onAddTime={(mins) => handleAddTime(c.id, mins)}
+            onMaintenance={() => handleToggleMaintenance(c.id)}
           />
         ))}
       </div>
@@ -143,12 +211,11 @@ export default function Dashboard({ onStatsUpdate }) {
         <div className="empty-state">
           <div className="empty-state-icon">🕹️</div>
           <div className="empty-state-text">
-            No hay consolas configuradas. Agrega una desde la API.
+            No hay consolas configuradas
           </div>
         </div>
       )}
 
-      {/* Modal de inicio de sesión */}
       {sessionForm && (
         <SessionForm
           console={sessionForm}

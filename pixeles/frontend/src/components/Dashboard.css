@@ -1,12 +1,80 @@
+/* ============================================
+   PIXELES - Dashboard
+   Dark gaming glassmorphism
+   ============================================ */
+
 .dashboard {
   animation: fadeIn 0.3s ease-out;
 }
 
+/* Stats Row */
+.dash-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.dash-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  transition: all 0.25s;
+}
+
+.dash-stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dash-stat-icon {
+  font-size: 1.6rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+}
+
+.dash-stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.dash-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.dash-stat-active .dash-stat-value { color: var(--status-occupied); }
+.dash-stat-free .dash-stat-value { color: var(--status-free); }
+.dash-stat-maint .dash-stat-value { color: var(--status-maintenance); }
+.dash-stat-money .dash-stat-value { color: var(--success); }
+.dash-stat-sessions .dash-stat-value { color: var(--accent-light); }
+
 .dashboard-error {
-  background: var(--status-maintenance-bg);
-  border: 1px solid var(--danger);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 14px 18px;
   margin-bottom: 20px;
   color: var(--danger);
   font-size: 0.9rem;
@@ -22,19 +90,15 @@
 }
 
 @media (max-width: 1200px) {
-  .dashboard-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  .dashboard-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 900px) {
-  .dashboard-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-stats-row { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 600px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .dash-stats-row { grid-template-columns: repeat(2, 1fr); }
 }
