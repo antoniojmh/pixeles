@@ -3,14 +3,36 @@ import { API_URL } from "../env.js";
 const BASE = API_URL;
 
 /**
- * Petición base a la API
+ * Obtiene el token JWT almacenado
+ */
+function getToken() {
+  try {
+    return localStorage.getItem("pixeles_token");
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Petición base a la API — incluye token JWT automáticamente
  */
 async function request(endpoint, options = {}) {
+  const token = getToken();
   const url = `${BASE}${endpoint}`;
   const config = {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...options.headers,
+    },
     ...options,
   };
+
+  // Si pasaron headers extra, no los dupliques
+  if (options.headers) {
+    config.headers = { ...config.headers, ...options.headers };
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  }
 
   const res = await fetch(url, config);
 
@@ -30,6 +52,21 @@ async function request(endpoint, options = {}) {
  * API - Funciones organizadas por recurso
  */
 export const api = {
+  // ========== Auth ==========
+  login: (username, password) =>
+    request("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+    }),
+
+  register: (data) =>
+    request("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  getMe: () => request("/api/auth/me"),
+
   // ========== Consolas ==========
   getConsoles: () => request("/api/consoles"),
 
@@ -52,6 +89,24 @@ export const api = {
 
   endSession: (consoleId) =>
     request(`/api/consoles/${consoleId}/end`, { method: "POST" }),
+
+  pauseSession: (consoleId) =>
+    request(`/api/consoles/${consoleId}/pause`, { method: "POST" }),
+
+  resumeSession: (consoleId) =>
+    request(`/api/consoles/${consoleId}/resume`, { method: "POST" }),
+
+  addTime: (consoleId, minutes) =>
+    request(`/api/consoles/${consoleId}/add-time`, {
+      method: "POST",
+      body: JSON.stringify({ minutes }),
+    }),
+
+  setConsoleStatus: (consoleId, status) =>
+    request(`/api/consoles/${consoleId}/status`, {
+      method: "POST",
+      body: JSON.stringify({ status }),
+    }),
 
   reserveConsole: (consoleId, data) =>
     request(`/api/consoles/${consoleId}/reserve`, {
@@ -103,6 +158,30 @@ export const api = {
 
   getTopConsoles: (limit = 10) =>
     request(`/api/reports/top-consoles?limit=${limit}`),
+
+  // ========== Products ==========
+  getProducts: () => request("/api/products"),
+
+  createProduct: (data) =>
+    request("/api/products", { method: "POST", body: JSON.stringify(data) }),
+
+  updateProduct: (id, data) =>
+    request(`/api/products/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+
+  deleteProduct: (id) =>
+    request(`/api/products/${id}`, { method: "DELETE" }),
+
+  // ========== Branches ==========
+  getBranches: () => request("/api/branches"),
+
+  createBranch: (data) =>
+    request("/api/branches", { method: "POST", body: JSON.stringify(data) }),
+
+  updateBranch: (id, data) =>
+    request(`/api/branches/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+
+  deleteBranch: (id) =>
+    request(`/api/branches/${id}`, { method: "DELETE" }),
 
   // ========== Settings ==========
   getSettings: () => request("/api/settings"),
